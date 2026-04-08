@@ -2,7 +2,7 @@ import pandas as pd
 
 # ================= LOAD & CLEAN DATA ================= #
 def load_data():
-    file = "data/Adidas US Sales Datasets.xlsx"
+    file = "Adidas US Sales Datasets.xlsx"
 
     # Load dataset
     df = pd.read_excel(file, sheet_name="Data Sales Adidas", skiprows=3)
