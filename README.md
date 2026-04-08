@@ -85,6 +85,8 @@ This project can be deployed using **Streamlit Cloud**.
 
 ---
 
+## live website link :https://sales-analyser-xktvvyxdkfjf4tsu6moqef.streamlit.app/
+
 ## 🔒 Note
 
 - `users.db` is excluded for security reasons  
