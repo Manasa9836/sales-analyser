@@ -247,5 +247,15 @@ else:
     # ================= RAW ================= #
     elif page == "Raw Data":
 
-        st.dataframe(filtered_df.head(100))
-        st.download_button("Download CSV", filtered_df.to_csv(index=False), "data.csv")
+        st.subheader("📄 Raw Dataset Preview")
+
+        st.dataframe(filtered_df, use_container_width=True)
+
+        csv = filtered_df.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            label="📥 Download Full Data",
+            data=csv,
+            file_name="sales_data.csv",
+            mime="text/csv"
+        )
