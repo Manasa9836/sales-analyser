@@ -29,7 +29,7 @@ def load_data():
     df["Units Sold"] = pd.to_numeric(df["Units Sold"], errors='coerce')
 
     df["Invoice Date"] = pd.to_datetime(df["Invoice Date"], errors='coerce')
-
+    df = df.dropna(subset=["Invoice Date"])
     # Fill numeric nulls
     df[["Total Sales", "Operating Profit", "Units Sold"]] = df[
         ["Total Sales", "Operating Profit", "Units Sold"]

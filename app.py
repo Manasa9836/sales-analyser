@@ -143,10 +143,8 @@ else:
 
     start_date, end_date = date_range
 
-    if not region:
-        region = df["Region"].unique()
-    if not product:
-        product = df["Product"].unique()
+    region = region if region else df["Region"].dropna().unique()
+    product = product if product else df["Product"].dropna().unique()
 
     filtered_df = df[
         (df["Region"].isin(region)) &
@@ -249,21 +247,27 @@ else:
 
         st.subheader("📄 Raw Dataset")
 
-        # DEBUG
-        st.write("Shape:", filtered_df.shape)
-        st.write("Columns:", filtered_df.columns)
+        # 🔍 DEBUG (VERY IMPORTANT)
+        st.write("Original DF shape:", df.shape)
+        st.write("Filtered DF shape:", filtered_df.shape)
+        st.write("Columns:", list(filtered_df.columns))
 
         if filtered_df.empty:
-            st.error("❌ Data is EMPTY after filtering")
+            st.error("❌ Filter removed all data!")
+
+            st.write("Selected Region:", region)
+            st.write("Selected Product:", product)
+            st.write("Date Range:", start_date, end_date)
+
         else:
-            st.success("✅ Data Loaded Successfully")
+            st.success("✅ Data is present")
 
             st.dataframe(filtered_df, width="stretch")
 
             csv = filtered_df.to_csv(index=False).encode("utf-8")
 
             st.download_button(
-             "📥 Download Data",
+                "📥 Download Data",
                 csv,
                 "sales_data.csv",
                 "text/csv"
