@@ -247,15 +247,33 @@ else:
     # ================= RAW ================= #
     elif page == "Raw Data":
 
-        st.subheader("📄 Raw Dataset Preview")
+    st.subheader("📄 Raw Dataset")
 
-        st.dataframe(filtered_df, use_container_width=True)
+    # DEBUG INFO (very important)
+    st.write("Rows:", filtered_df.shape[0], "Columns:", filtered_df.shape[1])
 
-        csv = filtered_df.to_csv(index=False).encode("utf-8")
+    if filtered_df is None or filtered_df.empty:
+        st.warning("⚠ No data available to display")
+    else:
+        try:
+            # Convert safely (fix hidden issues)
+            safe_df = filtered_df.copy()
 
-        st.download_button(
-            label="📥 Download Full Data",
-            data=csv,
-            file_name="sales_data.csv",
-            mime="text/csv"
-        )
+            for col in safe_df.columns:
+                safe_df[col] = safe_df[col].astype(str)
+
+            # Show data
+            st.dataframe(safe_df, use_container_width=True)
+
+            # Download
+            csv = safe_df.to_csv(index=False).encode("utf-8")
+
+            st.download_button(
+                "📥 Download Data",
+                csv,
+                "sales_data.csv",
+                "text/csv"
+            )
+
+        except Exception as e:
+            st.error(f"❌ Error displaying data: {e}")
