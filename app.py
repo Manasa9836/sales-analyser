@@ -247,33 +247,33 @@ else:
     # ================= RAW ================= #
     elif page == "Raw Data":
 
-    st.subheader("📄 Raw Dataset")
+        st.subheader("📄 Raw Dataset")
 
-    # DEBUG INFO (very important)
-    st.write("Rows:", filtered_df.shape[0], "Columns:", filtered_df.shape[1])
+        # DEBUG INFO (very important)
+        st.write("Rows:", filtered_df.shape[0], "Columns:", filtered_df.shape[1])
 
-    if filtered_df is None or filtered_df.empty:
-        st.warning("⚠ No data available to display")
-    else:
-        try:
-            # Convert safely (fix hidden issues)
-            safe_df = filtered_df.copy()
+        if filtered_df is None or filtered_df.empty:
+            st.warning("⚠ No data available to display")
+        else:
+            try:
+                # Convert safely (fix hidden issues)
+                safe_df = filtered_df.copy()
 
-            for col in safe_df.columns:
-                safe_df[col] = safe_df[col].astype(str)
+                for col in safe_df.columns:
+                    safe_df[col] = safe_df[col].astype(str)
 
-            # Show data
-            st.dataframe(safe_df, use_container_width=True)
+                # Show data
+                st.dataframe(safe_df, use_container_width=True)
 
-            # Download
-            csv = safe_df.to_csv(index=False).encode("utf-8")
+                # Download
+                csv = safe_df.to_csv(index=False).encode("utf-8")
 
-            st.download_button(
-                "📥 Download Data",
-                csv,
-                "sales_data.csv",
-                "text/csv"
-            )
+                st.download_button(
+                    "📥 Download Data",
+                    csv,
+                    "sales_data.csv",
+                    "text/csv"
+                )
 
-        except Exception as e:
-            st.error(f"❌ Error displaying data: {e}")
+            except Exception as e:
+                st.error(f"❌ Error displaying data: {e}")
