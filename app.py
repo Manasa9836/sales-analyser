@@ -42,19 +42,8 @@ if not st.session_state.logged_in:
     st.markdown("""
     <style>
     .stApp { background: black; }
-
-    .title {
-        font-size: 28px;
-        font-weight: bold;
-        text-align: center;
-        color: white;
-    }
-
-    .subtitle {
-        text-align: center;
-        color: #aaa;
-        margin-bottom: 20px;
-    }
+    .title { font-size: 28px; font-weight: bold; text-align: center; color: white; }
+    .subtitle { text-align: center; color: #aaa; margin-bottom: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -94,18 +83,10 @@ else:
 
     st.set_page_config(page_title="Sales Dashboard", layout="wide")
 
-    # 🌙 GLOBAL DARK THEME
     st.markdown("""
     <style>
-    .stApp {
-        background-color: #0e1117;
-        color: white;
-    }
-
-    section[data-testid="stSidebar"] {
-        background-color: #111827;
-    }
-
+    .stApp { background-color: #0e1117; color: white; }
+    section[data-testid="stSidebar"] { background-color: #111827; }
     [data-testid="stMetric"] {
         background: linear-gradient(135deg, #1f2937, #374151);
         border-radius: 12px;
@@ -163,11 +144,11 @@ else:
     charts = get_chart_data(filtered_df)
     insights = get_insights(filtered_df)
 
+    # ✅ Raw Data removed here
     page = st.sidebar.radio("📂 Navigate", [
         "Overview",
         "Sales Analysis",
-        "Business Forecasting & Strategy",
-        "Raw Data"
+        "Business Forecasting & Strategy"
     ])
 
     # ================= OVERVIEW ================= #
@@ -179,51 +160,34 @@ else:
         c3.metric("Total Units", f"{kpis['Total Units']:,.0f}")
         c4.metric("Profit Margin", f"{kpis['Profit Margin (%)']:.2f}%")
 
-        st.success(f"🏆 Best Region: {insights['Best Region']}") 
-        st.success(f"🛍 Best Product: {insights['Best Product']}") 
-        st.success(f"📊 Best Method: {insights['Best Sales Method']}") 
+        st.success(f"🏆 Best Region: {insights['Best Region']}")
+        st.success(f"🛍 Best Product: {insights['Best Product']}")
+        st.success(f"📊 Best Method: {insights['Best Sales Method']}")
         st.success(f"🏙 Best City: {insights['Best City']}")
+
     # ================= SALES ================= #
     elif page == "Sales Analysis":
 
         col1, col2 = st.columns(2)
 
         with col1:
-            st.plotly_chart(
-                px.bar(charts["sales_by_region"], x="Region", y="Total Sales", template="plotly_dark"),
-                use_container_width=True
-            )
+            st.plotly_chart(px.bar(charts["sales_by_region"], x="Region", y="Total Sales", template="plotly_dark"), use_container_width=True)
 
         with col2:
-            st.plotly_chart(
-                px.bar(charts["profit_by_region"], x="Region", y="Operating Profit", template="plotly_dark"),
-                use_container_width=True
-            )
+            st.plotly_chart(px.bar(charts["profit_by_region"], x="Region", y="Operating Profit", template="plotly_dark"), use_container_width=True)
 
         col3, col4 = st.columns(2)
 
         with col3:
-            st.plotly_chart(
-                px.line(charts["monthly_sales"], x="Month Name", y="Total Sales", template="plotly_dark"),
-                use_container_width=True
-            )
+            st.plotly_chart(px.line(charts["monthly_sales"], x="Month Name", y="Total Sales", template="plotly_dark"), use_container_width=True)
 
         with col4:
-            st.plotly_chart(
-                px.pie(charts["sales_by_product"], names="Product", values="Total Sales", template="plotly_dark"),
-                use_container_width=True
-            )
+            st.plotly_chart(px.pie(charts["sales_by_product"], names="Product", values="Total Sales", template="plotly_dark"), use_container_width=True)
 
-        st.plotly_chart(
-            px.scatter(filtered_df, x="Units Sold", y="Total Sales", color="Region", template="plotly_dark"),
-            use_container_width=True
-        )
+        st.plotly_chart(px.scatter(filtered_df, x="Units Sold", y="Total Sales", color="Region", template="plotly_dark"), use_container_width=True)
 
         corr = filtered_df[["Total Sales","Operating Profit","Units Sold","Price per Unit"]].corr()
-        st.plotly_chart(
-            px.imshow(corr, text_auto=True, template="plotly_dark"),
-            use_container_width=True
-        )
+        st.plotly_chart(px.imshow(corr, text_auto=True, template="plotly_dark"), use_container_width=True)
 
     # ================= FORECAST ================= #
     elif page == "Business Forecasting & Strategy":
@@ -236,16 +200,7 @@ else:
             pred = profit["Operating Profit"].iloc[-1] + growth
             st.metric("Predicted Profit", f"{pred:,.0f}")
 
-        st.plotly_chart(
-            px.line(profit, x="Invoice Date", y="Operating Profit", template="plotly_dark"),
-            use_container_width=True
-        )
+        st.plotly_chart(px.line(profit, x="Invoice Date", y="Operating Profit", template="plotly_dark"), use_container_width=True)
 
         change = st.slider("Price Change %", -50, 50, 0)
         st.metric("Simulated Sales", f"{filtered_df['Total Sales'].sum()*(1+change/100):,.0f}")
-
-    # ================= RAW ================= #
-    elif page == "Raw Data":
-
-        st.dataframe(filtered_df.head(100))
-        st.download_button("Download CSV", filtered_df.to_csv(index=False), "data.csv")
