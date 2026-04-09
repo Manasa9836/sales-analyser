@@ -147,19 +147,3 @@ def get_insights(df):
 
 
 # ================= MAIN (FOR TESTING) ================= #
-if __name__ == "__main__":
-    df = load_data()
-
-    print("\n🔹 Data Preview:\n", df.head())
-    print("\n🔹 Columns:\n", df.columns)
-
-    print("\n🔹 Null Values:\n", df.isnull().sum())
-
-    kpis = get_kpis(df)
-    print("\n🔹 KPIs:\n", kpis)
-
-    charts = get_chart_data(df)
-    print("\n🔹 Sample Chart Data:\n", charts["sales_by_region"].head())
-
-    insights = get_insights(df)
-    print("\n🔹 Insights:\n", insights)
