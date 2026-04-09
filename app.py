@@ -68,7 +68,7 @@ if not st.session_state.logged_in:
 
     st.markdown("<div class='subtitle'>🔐 Login / Signup</div>", unsafe_allow_html=True)
 
-    menu = st.radio("", ["Login", "Signup"], horizontal=True)
+    menu = st.radio("Select Option", ["Login", "Signup"], horizontal=True, label_visibility="collapsed")
 
     if menu == "Login":
         username = st.text_input("Username")
@@ -249,31 +249,22 @@ else:
 
         st.subheader("📄 Raw Dataset")
 
-        # DEBUG INFO (very important)
-        st.write("Rows:", filtered_df.shape[0], "Columns:", filtered_df.shape[1])
+        # DEBUG
+        st.write("Shape:", filtered_df.shape)
+        st.write("Columns:", filtered_df.columns)
 
-        if filtered_df is None or filtered_df.empty:
-            st.warning("⚠ No data available to display")
+        if filtered_df.empty:
+            st.error("❌ Data is EMPTY after filtering")
         else:
-            try:
-                # Convert safely (fix hidden issues)
-                safe_df = filtered_df.copy()
+            st.success("✅ Data Loaded Successfully")
 
-                for col in safe_df.columns:
-                    safe_df[col] = safe_df[col].astype(str)
+            st.dataframe(filtered_df, width="stretch")
 
-                # Show data
-                st.dataframe(safe_df, use_container_width=True)
+            csv = filtered_df.to_csv(index=False).encode("utf-8")
 
-                # Download
-                csv = safe_df.to_csv(index=False).encode("utf-8")
-
-                st.download_button(
-                    "📥 Download Data",
-                    csv,
-                    "sales_data.csv",
-                    "text/csv"
-                )
-
-            except Exception as e:
-                st.error(f"❌ Error displaying data: {e}")
+            st.download_button(
+             "📥 Download Data",
+                csv,
+                "sales_data.csv",
+                "text/csv"
+            )
