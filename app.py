@@ -189,13 +189,13 @@ else:
         with col1:
             st.plotly_chart(
                 px.bar(charts["sales_by_region"], x="Region", y="Total Sales", template="plotly_dark"),
-                use_container_width=True
+                use_container_width="stretch"
             )
 
         with col2:
             st.plotly_chart(
                 px.bar(charts["profit_by_region"], x="Region", y="Operating Profit", template="plotly_dark"),
-                use_container_width=True
+                use_container_width="stretch"
             )
 
         col3, col4 = st.columns(2)
@@ -203,24 +203,24 @@ else:
         with col3:
             st.plotly_chart(
                 px.line(charts["monthly_sales"], x="Month Name", y="Total Sales", template="plotly_dark"),
-                use_container_width=True
+                use_container_width="stretch"
             )
 
         with col4:
             st.plotly_chart(
                 px.pie(charts["sales_by_product"], names="Product", values="Total Sales", template="plotly_dark"),
-                use_container_width=True
+                use_container_width="stretch"
             )
 
         st.plotly_chart(
             px.scatter(filtered_df, x="Units Sold", y="Total Sales", color="Region", template="plotly_dark"),
-            use_container_width=True
+            use_container_width="stretch"
         )
 
         corr = filtered_df[["Total Sales","Operating Profit","Units Sold","Price per Unit"]].corr()
         st.plotly_chart(
             px.imshow(corr, text_auto=True, template="plotly_dark"),
-            use_container_width=True
+            use_container_width="stretch"
         )
 
     # ================= FORECAST ================= #
