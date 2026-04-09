@@ -146,12 +146,7 @@ else:
     region = region if region else df["Region"].dropna().unique()
     product = product if product else df["Product"].dropna().unique()
 
-    filtered_df = df[
-        (df["Region"].isin(region)) &
-        (df["Product"].isin(product)) &
-        (df["Invoice Date"] >= pd.to_datetime(start_date)) &
-        (df["Invoice Date"] <= pd.to_datetime(end_date))
-    ]
+    filtered_df = df.copy()
 
     if filtered_df.empty:
         st.warning("No data")
