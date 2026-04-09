@@ -2,26 +2,20 @@ import pandas as pd
 
 # ================= LOAD & CLEAN DATA ================= #
 def load_data():
-    file = "Adidas US Sales Datasets.xlsx"
+    try:
+        import os
+        file = os.path.join(os.path.dirname(__file__), "Adidas US Sales Datasets.xlsx")
 
-    # Load dataset
-    df = pd.read_excel(file, sheet_name="Data Sales Adidas", skiprows=3)
+        df = pd.read_excel(file, sheet_name="Data Sales Adidas", skiprows=3)
 
-    # Fix header
-    df.columns = df.iloc[0]
-    df = df[1:]
+        st.write("✅ File loaded successfully")   # DEBUG
 
-    # Clean column names
-    df.columns = df.columns.astype(str).str.strip()
+    except Exception as e:
+        import streamlit as st
+        st.error(f"❌ ERROR LOADING FILE: {e}")
+        return pd.DataFrame()
 
-    # Remove unwanted column
-    df = df.drop(columns=['nan'], errors='ignore')
-
-    # Remove empty rows
-    df.dropna(how='all', inplace=True)
-
-    # Reset index
-    df.reset_index(drop=True, inplace=True)
+    return df
 
     # ================= DATA TYPE FIX ================= #
     df["Total Sales"] = pd.to_numeric(df["Total Sales"], errors='coerce')

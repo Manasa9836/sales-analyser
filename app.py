@@ -68,7 +68,7 @@ if not st.session_state.logged_in:
 
     st.markdown("<div class='subtitle'>🔐 Login / Signup</div>", unsafe_allow_html=True)
 
-    menu = st.radio("Select Option", ["Login", "Signup"], horizontal=True, label_visibility="collapsed")
+    menu = st.radio("Select Option", ["Login", "Signup"], horizontal=True)
 
     if menu == "Login":
         username = st.text_input("Username")
@@ -238,32 +238,13 @@ else:
         st.metric("Simulated Sales", f"{filtered_df['Total Sales'].sum()*(1+change/100):,.0f}")
 
     # ================= RAW ================= #
-    elif page == "Raw Data":
+   elif page == "Raw Data":
+    st.subheader("📄 Raw Dataset")
 
-        st.subheader("📄 Raw Dataset")
+    st.write("DEBUG:", filtered_df.shape)
 
-        # 🔍 DEBUG (VERY IMPORTANT)
-        st.write("Original DF shape:", df.shape)
-        st.write("Filtered DF shape:", filtered_df.shape)
-        st.write("Columns:", list(filtered_df.columns))
+    if filtered_df is None or filtered_df.empty:
+        st.error("🚨 DATA NOT LOADED PROPERLY")
+        st.stop()
 
-        if filtered_df.empty:
-            st.error("❌ Filter removed all data!")
-
-            st.write("Selected Region:", region)
-            st.write("Selected Product:", product)
-            st.write("Date Range:", start_date, end_date)
-
-        else:
-            st.success("✅ Data is present")
-
-            st.dataframe(filtered_df, width="stretch")
-
-            csv = filtered_df.to_csv(index=False).encode("utf-8")
-
-            st.download_button(
-                "📥 Download Data",
-                csv,
-                "sales_data.csv",
-                "text/csv"
-            )
+    st.dataframe(filtered_df, width='stretch')
