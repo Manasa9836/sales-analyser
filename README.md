@@ -85,7 +85,7 @@ This project can be deployed using **Streamlit Cloud**.
 
 ---
 
-## live website link :https://sales-analyser-xktvvyxdkfjf4tsu6moqef.streamlit.app/
+## live website link :https://sales-analyser-gmgqqyuukzscephgucjxzz.streamlit.app/
 
 ## 🔒 Note
 
@@ -96,7 +96,7 @@ This project can be deployed using **Streamlit Cloud**.
 
 ## 👩‍💻 Author
 
-**Manasa**,**Nandini K M**,**Hamsa**,**Nayana M**
+**Manasa**.
 
 ---
 
