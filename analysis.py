@@ -4,56 +4,58 @@ import pandas as pd
 def load_data():
     file = "Adidas US Sales Datasets.xlsx"
 
-    # ✅ Correct way to load
+    # Load dataset
     df = pd.read_excel(file, sheet_name="Data Sales Adidas", skiprows=3)
 
-    # ✅ Clean column names
+    # Fix header
+    df.columns = df.iloc[0]
+    df = df[1:]
+
+    # Clean column names
     df.columns = df.columns.astype(str).str.strip()
 
-    # ❌ REMOVE THIS (causes issue)
-    # df.columns = df.iloc[0]
-    # df = df[1:]
-
-    # Remove unwanted column if exists
+    # Remove unwanted column
     df = df.drop(columns=['nan'], errors='ignore')
 
-    # Drop empty rows
+    # Remove empty rows
     df.dropna(how='all', inplace=True)
 
     # Reset index
     df.reset_index(drop=True, inplace=True)
 
-    # ================= TYPE FIX ================= #
+    # ================= DATA TYPE FIX ================= #
     df["Total Sales"] = pd.to_numeric(df["Total Sales"], errors='coerce')
     df["Operating Profit"] = pd.to_numeric(df["Operating Profit"], errors='coerce')
     df["Units Sold"] = pd.to_numeric(df["Units Sold"], errors='coerce')
 
     df["Invoice Date"] = pd.to_datetime(df["Invoice Date"], errors='coerce')
 
-    # 🚨 IMPORTANT FIX
-    df = df.dropna(subset=["Invoice Date"])  # remove invalid dates
-
     # Fill numeric nulls
     df[["Total Sales", "Operating Profit", "Units Sold"]] = df[
         ["Total Sales", "Operating Profit", "Units Sold"]
     ].fillna(0)
 
-    # ================= FEATURES ================= #
+    # ================= FEATURE ENGINEERING ================= #
+
+    # Time features
     df["Year"] = df["Invoice Date"].dt.year
     df["Month"] = df["Invoice Date"].dt.month
     df["Month Name"] = df["Invoice Date"].dt.strftime('%b')
 
+    # Sort months properly
     month_order = ['Jan','Feb','Mar','Apr','May','Jun',
                    'Jul','Aug','Sep','Oct','Nov','Dec']
     df["Month Name"] = pd.Categorical(df["Month Name"],
                                       categories=month_order,
                                       ordered=True)
 
+    # Business metrics
     df["Revenue per Unit"] = df["Total Sales"] / df["Units Sold"]
     df["Profit per Unit"] = df["Operating Profit"] / df["Units Sold"]
     df["Profit Ratio"] = df["Operating Profit"] / df["Total Sales"]
 
     return df
+
 
 # ================= KPI CALCULATIONS ================= #
 def get_kpis(df):

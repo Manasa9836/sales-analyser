@@ -179,12 +179,10 @@ else:
         c3.metric("Total Units", f"{kpis['Total Units']:,.0f}")
         c4.metric("Profit Margin", f"{kpis['Profit Margin (%)']:.2f}%")
 
-
         st.success(f"🏆 Best Region: {insights['Best Region']}") 
         st.success(f"🛍 Best Product: {insights['Best Product']}") 
         st.success(f"📊 Best Method: {insights['Best Sales Method']}") 
         st.success(f"🏙 Best City: {insights['Best City']}")
-
     # ================= SALES ================= #
     elif page == "Sales Analysis":
 
@@ -248,8 +246,6 @@ else:
 
     # ================= RAW ================= #
     elif page == "Raw Data":
-        st.write("Columns:", df.columns)
-        st.write("Data preview:", df.head())
 
         st.dataframe(filtered_df.head(100))
         st.download_button("Download CSV", filtered_df.to_csv(index=False), "data.csv")
