@@ -42,12 +42,14 @@ if not st.session_state.logged_in:
     st.markdown("""
     <style>
     .stApp { background: black; }
+
     .title {
         font-size: 28px;
         font-weight: bold;
         text-align: center;
         color: white;
     }
+
     .subtitle {
         text-align: center;
         color: #aaa;
@@ -66,7 +68,7 @@ if not st.session_state.logged_in:
 
     st.markdown("<div class='subtitle'>🔐 Login / Signup</div>", unsafe_allow_html=True)
 
-    menu = st.radio("Select Option", ["Login", "Signup"], horizontal=True)
+    menu = st.radio("", ["Login", "Signup"], horizontal=True)
 
     if menu == "Login":
         username = st.text_input("Username")
@@ -92,15 +94,18 @@ else:
 
     st.set_page_config(page_title="Sales Dashboard", layout="wide")
 
+    # 🌙 GLOBAL DARK THEME
     st.markdown("""
     <style>
     .stApp {
         background-color: #0e1117;
         color: white;
     }
+
     section[data-testid="stSidebar"] {
         background-color: #111827;
     }
+
     [data-testid="stMetric"] {
         background: linear-gradient(135deg, #1f2937, #374151);
         border-radius: 12px;
@@ -138,10 +143,17 @@ else:
 
     start_date, end_date = date_range
 
-    region = region if region else df["Region"].dropna().unique()
-    product = product if product else df["Product"].dropna().unique()
+    if not region:
+        region = df["Region"].unique()
+    if not product:
+        product = df["Product"].unique()
 
-    filtered_df = df.copy()
+    filtered_df = df[
+        (df["Region"].isin(region)) &
+        (df["Product"].isin(product)) &
+        (df["Invoice Date"] >= pd.to_datetime(start_date)) &
+        (df["Invoice Date"] <= pd.to_datetime(end_date))
+    ]
 
     if filtered_df.empty:
         st.warning("No data")
@@ -167,9 +179,10 @@ else:
         c3.metric("Total Units", f"{kpis['Total Units']:,.0f}")
         c4.metric("Profit Margin", f"{kpis['Profit Margin (%)']:.2f}%")
 
-        st.success(f"🏆 Best Region: {insights['Best Region']}")
-        st.success(f"🛍 Best Product: {insights['Best Product']}")
-        st.success(f"📊 Best Method: {insights['Best Sales Method']}")
+        
+        st.success(f"🏆 Best Region: {insights['Best Region']}") 
+        st.success(f"🛍 Best Product: {insights['Best Product']}") 
+        st.success(f"📊 Best Method: {insights['Best Sales Method']}") 
         st.success(f"🏙 Best City: {insights['Best City']}")
 
     # ================= SALES ================= #
@@ -180,13 +193,13 @@ else:
         with col1:
             st.plotly_chart(
                 px.bar(charts["sales_by_region"], x="Region", y="Total Sales", template="plotly_dark"),
-                width="stretch"
+                use_container_width=True
             )
 
         with col2:
             st.plotly_chart(
                 px.bar(charts["profit_by_region"], x="Region", y="Operating Profit", template="plotly_dark"),
-                width="stretch"
+                use_container_width=True
             )
 
         col3, col4 = st.columns(2)
@@ -194,24 +207,24 @@ else:
         with col3:
             st.plotly_chart(
                 px.line(charts["monthly_sales"], x="Month Name", y="Total Sales", template="plotly_dark"),
-                width="stretch"
+                use_container_width=True
             )
 
         with col4:
             st.plotly_chart(
                 px.pie(charts["sales_by_product"], names="Product", values="Total Sales", template="plotly_dark"),
-                width="stretch"
+                use_container_width=True
             )
 
         st.plotly_chart(
             px.scatter(filtered_df, x="Units Sold", y="Total Sales", color="Region", template="plotly_dark"),
-            width="stretch"
+            use_container_width=True
         )
 
         corr = filtered_df[["Total Sales","Operating Profit","Units Sold","Price per Unit"]].corr()
         st.plotly_chart(
             px.imshow(corr, text_auto=True, template="plotly_dark"),
-            width="stretch"
+            use_container_width=True
         )
 
     # ================= FORECAST ================= #
@@ -227,7 +240,7 @@ else:
 
         st.plotly_chart(
             px.line(profit, x="Invoice Date", y="Operating Profit", template="plotly_dark"),
-            width="stretch"
+            use_container_width=True
         )
 
         change = st.slider("Price Change %", -50, 50, 0)
@@ -236,12 +249,5 @@ else:
     # ================= RAW ================= #
     elif page == "Raw Data":
 
-        st.subheader("📄 Raw Dataset")
-
-        st.write("DEBUG:", filtered_df.shape)
-
-        if filtered_df is None or filtered_df.empty:
-            st.error("🚨 DATA NOT LOADED PROPERLY")
-            st.stop()
-
-        st.dataframe(filtered_df, width='stretch')
+        st.dataframe(filtered_df.head(100))
+        st.download_button("Download CSV", filtered_df.to_csv(index=False), "data.csv")
