@@ -238,13 +238,13 @@ else:
         st.metric("Simulated Sales", f"{filtered_df['Total Sales'].sum()*(1+change/100):,.0f}")
 
     # ================= RAW ================= #
-   elif page == "Raw Data":
-    st.subheader("📄 Raw Dataset")
+    elif page == "Raw Data":
+        st.subheader("📄 Raw Dataset")
 
-    st.write("DEBUG:", filtered_df.shape)
+        st.write("DEBUG:", filtered_df.shape)
 
-    if filtered_df is None or filtered_df.empty:
-        st.error("🚨 DATA NOT LOADED PROPERLY")
-        st.stop()
+        if filtered_df is None or filtered_df.empty:
+            st.error("🚨 DATA NOT LOADED PROPERLY")
+            st.stop()
 
-    st.dataframe(filtered_df, width='stretch')
+        st.dataframe(filtered_df, width='stretch')
